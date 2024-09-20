@@ -63,14 +63,38 @@ scene.add(directionalLightCameraHelper);
 directionalLightCameraHelper.visible = false;
 window.addEventListener("keydown", (e) => {
   e.preventDefault();
-  if (e.key == "h") {
+  if (e.key == "d") {
     directionalLightCameraHelper.visible =
       !directionalLightCameraHelper.visible;
   }
 });
 
+//SPOTLIGHT
+const spotLight = new THREE.SpotLight(0xffffff, 3.6, 10, Math.PI * 0.3);
 
+spotLight.castShadow = true;
+spotLight.shadow.mapSize.width = 1024;
+spotLight.shadow.mapSize.height = 1024;
+spotLight.shadow.camera.fov = 30; //field of view of camera
+spotLight.shadow.camera.near = 1;
+spotLight.shadow.camera.far = 5;
 
+spotLight.position.set(0, 2, 2);
+scene.add(spotLight);
+scene.add(spotLight.target);
+
+//CameraHelper aiuta a vedere visivamente la zona della camera
+const spotLightCameraHelper = new THREE.CameraHelper(spotLight.shadow.camera);
+scene.add(spotLightCameraHelper);
+
+//Active disactive cameraHelper con ss btn
+spotLightCameraHelper.visible = false;
+window.addEventListener("keydown", (e) => {
+  e.preventDefault();
+  if (e.key == "s") {
+    spotLightCameraHelper.visible = !spotLightCameraHelper.visible;
+  }
+});
 //
 /**
  * Materials
@@ -148,7 +172,7 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 // first of all attivare shadowmap sul renderer***************
 renderer.shadowMap.enabled = true;
 
-//PSFSoftShadowMap dopo 
+//PSFSoftShadowMap dopo
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 /**
