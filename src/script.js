@@ -20,6 +20,7 @@ const scene = new THREE.Scene();
 const textureLoader = new THREE.TextureLoader();
 // IMPORTARE Baked shadow
 const bakedShadow = textureLoader.load("/textures/bakedShadow.jpg");
+const simpleShadow = textureLoader.load("/textures/simpleShadow.jpg");
 bakedShadow.colorSpace = THREE.SRGBColorSpace;
 
 /**
@@ -143,10 +144,7 @@ const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.5, 32, 32), material);
 //second attivare il castshadow sul oggetto interessato***************
 sphere.castShadow = true;
 
-const plane = new THREE.Mesh(
-  new THREE.PlaneGeometry(5, 5), 
-  new THREE.MeshBasicMaterial({map: bakedShadow})
-);
+const plane = new THREE.Mesh(new THREE.PlaneGeometry(5, 5), material);
 plane.rotation.x = -Math.PI * 0.5;
 plane.position.y = -0.5;
 //third attivare il reciveShadow sul oggetto interessato***************
@@ -154,6 +152,24 @@ plane.receiveShadow = true;
 
 scene.add(sphere, plane);
 
+/**
+ * Baked shadow dinamico
+ */
+//creare un mesh con un planeGeometry misura giusta e meshbasicmaterial
+const sphereShadow = new THREE.Mesh(
+  new THREE.PlaneGeometry(1.5, 1.5),
+  new THREE.MeshBasicMaterial({
+    color: 0x00000,
+    transparent: true,
+    alphaMap: simpleShadow,
+  })
+);
+
+//posizionare in modo giusto appenna sopra del plane
+sphereShadow.rotateX(-(Math.PI * 0.5));
+sphereShadow.position.y = plane.position.y + 0.01;
+
+scene.add(sphereShadow);
 /**
  * Sizes
  */
@@ -217,6 +233,16 @@ const clock = new THREE.Clock();
 
 const tick = () => {
   const elapsedTime = clock.getElapsedTime();
+
+  //update sphere
+  sphere.position.x = Math.cos(elapsedTime) * 1.5;
+  sphere.position.z = Math.sin(elapsedTime) * 1.5;
+  sphere.position.y = Math.abs(Math.sin(elapsedTime * 3));
+
+  //update sphere shadow
+  sphereShadow.position.x = sphere.position.x;
+  sphereShadow.position.z = sphere.position.z;
+  sphereShadow.material.opacity = (1 - sphere.position.y) * 0.3;
 
   // Update controls
   controls.update();
