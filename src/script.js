@@ -15,6 +15,14 @@ const canvas = document.querySelector("canvas.webgl");
 const scene = new THREE.Scene();
 
 /**
+ * Textures
+ */
+const textureLoader = new THREE.TextureLoader();
+// IMPORTARE Baked shadow
+const bakedShadow = textureLoader.load("/textures/bakedShadow.jpg");
+bakedShadow.colorSpace = THREE.SRGBColorSpace;
+
+/**
  * Lights
  */
 // Ambient light
@@ -135,7 +143,10 @@ const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.5, 32, 32), material);
 //second attivare il castshadow sul oggetto interessato***************
 sphere.castShadow = true;
 
-const plane = new THREE.Mesh(new THREE.PlaneGeometry(5, 5), material);
+const plane = new THREE.Mesh(
+  new THREE.PlaneGeometry(5, 5), 
+  new THREE.MeshBasicMaterial({map: bakedShadow})
+);
 plane.rotation.x = -Math.PI * 0.5;
 plane.position.y = -0.5;
 //third attivare il reciveShadow sul oggetto interessato***************
