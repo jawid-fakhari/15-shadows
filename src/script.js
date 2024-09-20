@@ -87,7 +87,7 @@ scene.add(spotLight.target);
 const spotLightCameraHelper = new THREE.CameraHelper(spotLight.shadow.camera);
 scene.add(spotLightCameraHelper);
 
-//Active disactive cameraHelper con ss btn
+//Active disactive cameraHelper con s btn
 spotLightCameraHelper.visible = false;
 window.addEventListener("keydown", (e) => {
   e.preventDefault();
@@ -95,7 +95,31 @@ window.addEventListener("keydown", (e) => {
     spotLightCameraHelper.visible = !spotLightCameraHelper.visible;
   }
 });
-//
+
+// POINT LIGHT
+const pointLight = new THREE.PointLight(0xffffff, 2.7);
+
+pointLight.castShadow = true;
+spotLight.shadow.mapSize.width = 1024;
+spotLight.shadow.mapSize.height = 1024;
+spotLight.shadow.camera.near = 0.1;
+spotLight.shadow.camera.far = 5;
+
+scene.add(pointLight);
+pointLight.position.set(-1, 1, 0);
+
+//CameraHelper aiuta a vedere visivamente la zona della camera
+const pointLightCameraHelper = new THREE.CameraHelper(pointLight.shadow.camera);
+scene.add(pointLightCameraHelper);
+
+//Active disactive cameraHelper con s btn
+pointLightCameraHelper.visible = false;
+window.addEventListener("keydown", (e) => {
+  e.preventDefault();
+  if (e.key == "p") {
+    pointLightCameraHelper.visible = !pointLightCameraHelper.visible;
+  }
+});
 /**
  * Materials
  */
