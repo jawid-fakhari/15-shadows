@@ -45,15 +45,31 @@ directionalLight.shadow.camera.top = 2;
 directionalLight.shadow.camera.right = 2;
 directionalLight.shadow.camera.bottom = -2;
 directionalLight.shadow.camera.left = -2;
+
 //Ottimizzare il far e near del light per evitare il far troppo lontano e near troppo vicino,
 directionalLight.shadow.camera.near = 1;
 directionalLight.shadow.camera.far = 6;
+
+//Controllare il BLUR - poi il concetto di PCFSoftShadowMap nel renderer (che toglie il blur ma il shadow è meglio rispetto prima line 150 circa)
+directionalLight.shadow.radius = 10;
 
 //CameraHelper aiuta a vedere visivamente la zona della camera
 const directionalLightCameraHelper = new THREE.CameraHelper(
   directionalLight.shadow.camera
 );
 scene.add(directionalLightCameraHelper);
+
+//Active disactive cameraHelper con h btn
+directionalLightCameraHelper.visible = false;
+window.addEventListener("keydown", (e) => {
+  e.preventDefault();
+  if (e.key == "h") {
+    directionalLightCameraHelper.visible =
+      !directionalLightCameraHelper.visible;
+  }
+});
+
+
 
 //
 /**
@@ -128,8 +144,12 @@ const renderer = new THREE.WebGLRenderer({
 });
 renderer.setSize(sizes.width, sizes.height);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
 // first of all attivare shadowmap sul renderer***************
 renderer.shadowMap.enabled = true;
+
+//PSFSoftShadowMap dopo 
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 /**
  * Animate
